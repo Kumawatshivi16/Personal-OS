@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal OS</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SheetJS for Excel/CSV parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="brand">
+                <h1>PERSONAL <span>OS</span></h1>
+            </div>
+            <ul class="nav-links">
+                <li><button class="nav-btn active" data-target="dashboard-view">Dashboard</button></li>
+                <li><button class="nav-btn" data-target="gym-view">Gym Tracker</button></li>
+                <li><button class="nav-btn" data-target="study-view">Study Tracker</button></li>
+                <li><button class="nav-btn" data-target="settings-view">Settings & Data</button></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Dashboard View -->
+            <section id="dashboard-view" class="view active">
+                <header class="view-header">
+                    <h2>Dashboard</h2>
+                    <p id="current-date" class="subtitle">Loading date...</p>
+                </header>
+                <div class="dashboard-grid">
+                    <div class="card summary-card">
+                        <h3>Gym Status</h3>
+                        <p id="dash-gym-status">No workout logged today.</p>
+                        <button class="btn-primary" onclick="app.navigateTo('gym-view')">Log Workout</button>
+                    </div>
+                    <div class="card summary-card">
+                        <h3>Study Progress</h3>
+                        <p id="dash-study-status">0 hours studied today.</p>
+                        <button class="btn-primary" onclick="app.navigateTo('study-view')">Log Study</button>
+                    </div>
+                </div>
+                <div class="charts-container">
+                    <div class="card chart-card">
+                        <h3>Weekly Activity</h3>
+                        <canvas id="weeklyActivityChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gym Tracker View -->
+            <section id="gym-view" class="view">
+                <header class="view-header">
+                    <h2>Gym Tracker</h2>
+                </header>
+                <div class="gym-controls">
+                    <button class="btn-primary" id="btn-new-workout">Start New Workout</button>
+                    <button class="btn-secondary" id="btn-routine-editor">Edit Routines (PPL)</button>
+                </div>
+                <div class="card mt-2">
+                    <h3>Recent Workouts</h3>
+                    <div id="workout-history" class="empty-state">
+                        <p>No workouts recorded yet. Start sweating!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Study Tracker View -->
+            <section id="study-view" class="view">
+                <header class="view-header">
+                    <h2>Study Tracker (CA Inter)</h2>
+                </header>
+                <div class="study-controls">
+                    <button class="btn-primary" id="btn-log-study">Log Study Session</button>
+                    <select id="subject-filter" class="form-input">
+                        <option value="all">All Subjects</option>
+                        <option value="Accounting">Accounting</option>
+                        <option value="Costing">Costing</option>
+                        <option value="Tax-IT">Taxation - IT</option>
+                        <option value="Tax-GST">Taxation - GST</option>
+                        <option value="Law">Law</option>
+                        <option value="Audit">Audit</option>
+                        <option value="FM">FM</option>
+                        <option value="SM">SM</option>
+                    </select>
+                </div>
+                <div class="study-grid mt-2" id="study-subjects-container">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- Settings & Data View -->
+            <section id="settings-view" class="view">
+                <header class="view-header">
+                    <h2>Settings & Data</h2>
+                </header>
+                <div class="settings-grid">
+                    <div class="card">
+                        <h3>Themes</h3>
+                        <div class="form-group">
+                            <label>Global Appearance</label>
+                            <select id="theme-select" class="form-input">
+                                <option value="dark">Dark Mode</option>
+                                <option value="light">Light Mode</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Data Management</h3>
+                        <p class="text-sm">Data is saved locally in your browser. Back it up regularly.</p>
+                        <div class="btn-group mt-1">
+                            <button class="btn-secondary" id="btn-export-json">Export Backup (JSON)</button>
+                            <button class="btn-secondary" id="btn-import-spreadsheet">Import Excel/CSV</button>
+                            <button class="btn-danger" id="btn-clear-data">Erase All Data</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals (Hidden by default, shown via JS) -->
+    <div id="import-modal" class="modal">
+        <div class="modal-content">
+            <h3>Import Study Data</h3>
+            <input type="file" id="import-file" accept=".csv, .xlsx, .json" class="form-input">
+            <div id="import-preview" class="import-preview mt-1"></div>
+            <div class="modal-actions mt-2">
+                <button class="btn-secondary" onclick="document.getElementById('import-modal').classList.remove('active')">Cancel</button>
+                <button class="btn-primary" id="btn-confirm-import" disabled>Confirm Import</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Scripts (Order matters: Data -> Logic -> UI -> Charts) -->
+    <script src="storage.js"></script>
+    <script src="gym.js"></script>
+    <script src="study.js"></script>
+    <script src="charts.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
